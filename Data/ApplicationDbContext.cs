@@ -4,13 +4,13 @@ using Training_Management_System_ITI_Project.Models;
 
 namespace Training_Management_System_ITI_Project.Data
 {
-    /// <summary>
-    /// Entity Framework DbContext for the Training Management System with ASP.NET Core Identity integration.
-    /// Defines the database schema, relationships, and constraints for all entities.
-    /// Implements business rules through database constraints and indexes.
-    /// Extends IdentityDbContext to provide authentication and authorization capabilities.
-    /// </summary>
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+  /// <summary>
+  /// Entity Framework DbContext for the Training Management System with ASP.NET Core Identity integration.
+  /// Defines the database schema, relationships, and constraints for all entities.
+  /// Implements business rules through database constraints and indexes.
+  /// Extends IdentityDbContext to provide authentication and authorization capabilities.
+  /// </summary>
+  public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
   {
     /// <summary>
     /// Initializes a new instance of the ApplicationDbContext
@@ -27,21 +27,21 @@ namespace Training_Management_System_ITI_Project.Data
     /// </summary>
     public DbSet<Course> Courses { get; set; }
 
-        /// <summary>
-        /// Database table for Session entities
-        /// </summary>
-        public DbSet<Session> Sessions { get; set; }
+    /// <summary>
+    /// Database table for Session entities
+    /// </summary>
+    public DbSet<Session> Sessions { get; set; }
 
-        /// <summary>
-        /// Database table for legacy User entities (for backward compatibility)
-        /// Note: ApplicationUser (Identity) is used for authentication, this is for legacy support
-        /// </summary>
-        public DbSet<User> LegacyUsers { get; set; }
+    /// <summary>
+    /// Database table for legacy User entities (for backward compatibility)
+    /// Note: ApplicationUser (Identity) is used for authentication, this is for legacy support
+    /// </summary>
+    public DbSet<User> LegacyUsers { get; set; }
 
-        /// <summary>
-        /// Database table for Grade entities
-        /// </summary>
-        public DbSet<Grade> Grades { get; set; }
+    /// <summary>
+    /// Database table for Grade entities
+    /// </summary>
+    public DbSet<Grade> Grades { get; set; }
 
     /// <summary>
     /// Configures entity relationships, constraints, and database schema using Fluent API.
