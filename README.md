@@ -2,9 +2,36 @@
 
 ## Overview
 
-A comprehensive ASP.NET Core MVC web application designed for managing training programs, including courses, sessions, users, and grades. This system implements modern software engineering practices including the Repository Pattern, comprehensive validation, and clean architecture principles.
+A comprehensive ASP.NET Core MVC web application designed for managing training programs, including courses, sessions, users, and grades. This system implements modern software engineering practices including the Repository Pattern, comprehensive validation, ASP.NET Core Identity authentication, and role-based authorization with hierarchical permissions.
 
 ## 🚀 Features
+
+### 🔐 Authentication & Authorization System
+
+#### **Full Authentication Implementation**
+- **ASP.NET Core Identity Integration** - Secure user authentication and session management
+- **Hierarchical Role System** - Four-tier permission structure with inheritance
+- **Password Security** - Enforced complexity requirements and lockout protection
+- **Session Management** - Configurable timeout and remember-me functionality
+
+#### **Role Hierarchy & Permissions**
+- **Super Admin** (Level 3) - Full system control including admin management
+- **Admin** (Level 2) - System administration excluding super admin functions
+- **Instructor** (Level 1) - Course and session management capabilities
+- **Trainee** (Level 0) - Basic access for learning and grade viewing
+
+#### **Security Features**
+- **Account Lockout** - Automatic lockout after failed login attempts
+- **Password Requirements** - Minimum complexity and length enforcement
+- **Secure Sessions** - HTTP-only cookies with sliding expiration
+- **Access Control** - Page-level and action-level authorization
+- **Audit Trail** - Login/logout tracking and user activity monitoring
+
+#### **User Management**
+- **Role-Based Registration** - Admins create accounts with appropriate permissions
+- **Profile Management** - Users can view and update their profiles
+- **Password Management** - Secure password change functionality
+- **Account Status Control** - Activate/deactivate user accounts
 
 ### Core Functionality
 
@@ -65,13 +92,32 @@ A comprehensive ASP.NET Core MVC web application designed for managing training 
 - **Dependency Injection**: Promotes loose coupling and easier testing
 - **MVC Pattern**: Separates concerns between Model, View, and Controller layers
 
+### Authentication & Security Architecture
+- **ASP.NET Core Identity**: Complete authentication and authorization framework
+- **Role-Based Authorization**: Hierarchical permission system with four user levels
+- **Custom Authorization Attributes**: Fine-grained access control decorators
+- **Security Headers**: HTTPS enforcement, secure cookies, and HSTS
+- **Password Security**: Complexity requirements, hashing, and lockout protection
+
+### Authorization Attributes
+- `[MinimumRole(UserRole)]`: Hierarchical role checking with inheritance
+- `[RequireRole(UserRole[])]`: Exact role match requirement
+- `[SuperAdminOnly]`: Highest privilege level access
+- `[AdminOrAbove]`: Admin and SuperAdmin access
+- `[InstructorOrAbove]`: Instructor, Admin, and SuperAdmin access
+- `[ResourceOwnerOrAdmin]`: Own resource or admin access
+
 ### Data Models
 
 ```csharp
+// Authentication entities
+ApplicationUser: Id, UserName, Email, FullName, Role, IsActive, CreatedAt
+IdentityRole: Id, Name, NormalizedName
+
 // Core entities with their relationships
 Course: Id, Name, Category, InstructorId
 Session: Id, CourseId, StartDate, EndDate
-User: Id, Name, Email, Role
+User: Id, Name, Email, Role (Legacy model for backward compatibility)
 Grade: Id, SessionId, TraineeId, Value
 ```
 
@@ -86,6 +132,41 @@ Grade: Id, SessionId, TraineeId, Value
 - `DateGreaterThanAttribute`: Compares two date properties
 - `UniqueCourseNameAttribute`: Prevents duplicate course names
 - `UniqueEmailAttribute`: Ensures email uniqueness
+
+## 🧪 Testing the Authentication System
+
+### Quick Start Test
+
+1. **Access the Application**
+   - Open `http://localhost:5069` in your browser
+   - You should see the home page with "Login" in the navigation
+
+2. **Test SuperAdmin Login**
+   - Click "Login"
+   - Enter credentials:
+     - Email: `superadmin@trainingms.com`
+     - Password: `SuperAdmin123!`
+   - After login, you should see "User Management" in the navigation
+
+3. **Test User Management**
+   - Click "User Management" to see all users
+   - Click "Register New User" to create additional accounts
+   - Test creating Admin, Instructor, and Trainee accounts
+
+4. **Test Role-Based Access**
+   - Log out and log in as different roles
+   - Verify that menu items change based on user permissions
+   - Test accessing restricted pages directly via URL
+
+### Authentication Features Verification
+
+- ✅ Secure password hashing with ASP.NET Core Identity
+- ✅ Role-based navigation menus
+- ✅ Hierarchical permission system
+- ✅ User account activation/deactivation
+- ✅ Profile management and password changes
+- ✅ Automatic redirect to login for protected pages
+- ✅ Custom authorization attributes working correctly
 
 ## 🛠️ Technology Stack
 
@@ -125,15 +206,34 @@ Update the connection string in `appsettings.json`:
 dotnet restore
 ```
 
-### 4. Run the Application
+### 4. Initialize Database and Authentication
+
+```bash
+dotnet ef database update
+```
+
+### 5. Run the Application
+
 ```bash
 dotnet run
 ```
 
-The application will start and automatically create the database on first run.
+The application will start and automatically create the database with a default SuperAdmin user on first run.
 
-### 5. Access the Application
+**Default SuperAdmin Credentials:**
+- **Email**: superadmin@trainingms.com
+- **Password**: SuperAdmin123!
+- **Role**: SuperAdmin (Full system access)
+
+### 6. Access the Application
+
 Open your browser and navigate to `https://localhost:5001` or `http://localhost:5000`
+
+**First Login Steps:**
+1. Click "Login" in the navigation menu
+2. Use the SuperAdmin credentials above
+3. You can now create additional Admin and Instructor accounts
+4. Regular Trainees can be registered through the user management interface
 
 ## 📁 Project Structure
 
@@ -152,6 +252,77 @@ Training-Management-System-ITI-Project/
 ```
 
 ## 🎯 Usage Examples
+
+## 🎯 Usage Guide
+
+### Authentication & User Management
+
+#### First-Time Login
+
+1. Navigate to the application URL (`https://localhost:5001`)
+2. Click **"Login"** in the top navigation
+3. Use the default SuperAdmin credentials:
+   - Email: `superadmin@trainingms.com`
+   - Password: `SuperAdmin123!`
+
+#### Creating New Users
+
+**SuperAdmin and Admin users can create accounts for:**
+- Other Admins
+- Instructors
+- Trainees
+
+**Steps to create a new user:**
+
+1. After logging in, click **"User Management"** in the navigation
+2. Click **"Register New User"**
+3. Fill in the user details:
+   - Full Name
+   - Email Address
+   - Select Role (Admin/Instructor/Trainee)
+   - Password (must meet complexity requirements)
+4. Click **"Register"** to create the account
+
+#### Role Hierarchy & Permissions
+
+**SuperAdmin (Highest Access)**
+- Full system access
+- Manage all users, courses, sessions, and grades
+- System administration capabilities
+
+**Admin**
+- Manage courses, sessions, and grades
+- Create Instructor and Trainee accounts
+- View all system data
+
+**Instructor**
+- Create and manage their own courses
+- Schedule sessions for their courses
+- Record grades for their sessions
+- View trainee progress
+
+**Trainee (Limited Access)**
+- View enrolled courses and sessions
+- View own grades and progress
+- Update profile information
+
+#### User Account Management
+
+**Change Password:**
+
+1. Click your name in the top-right corner
+2. Select **"Profile"**
+3. Click **"Change Password"**
+4. Enter current password and new password
+5. Click **"Update Password"**
+
+**Manage Users (Admin/SuperAdmin only):**
+
+1. Navigate to **"User Management"**
+2. View all users with their roles and status
+3. **Activate/Deactivate** users using the toggle button
+4. Search users by name or email
+5. Filter users by role
 
 ### Creating a Course
 1. Navigate to **Courses** → **Create New**
