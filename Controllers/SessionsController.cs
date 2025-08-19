@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Training_Management_System_ITI_Project.Models;
 using Training_Management_System_ITI_Project.Repositories;
 using Training_Management_System_ITI_Project.ViewModels;
+using Training_Management_System_ITI_Project.Attributes;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
+    /// <summary>
+    /// Controller for managing training sessions.
+    /// Requires authentication for all actions.
+    /// </summary>
+    [Authorize]
     public class SessionsController : Controller
     {
         private readonly ISessionRepository _sessionRepository;
@@ -54,6 +61,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         }
 
         // GET: Sessions/Create
+        [InstructorOrAbove]
         public async Task<IActionResult> Create()
         {
             var viewModel = new SessionViewModel
@@ -68,6 +76,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         // POST: Sessions/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [InstructorOrAbove]
         public async Task<IActionResult> Create(SessionViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -89,6 +98,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         }
 
         // GET: Sessions/Edit/5
+        [InstructorOrAbove]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -117,6 +127,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         // POST: Sessions/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [InstructorOrAbove]
         public async Task<IActionResult> Edit(int id, SessionViewModel viewModel)
         {
             if (id != viewModel.Id)
@@ -146,6 +157,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         }
 
         // GET: Sessions/Delete/5
+        [AdminOrAbove]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -165,6 +177,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         // POST: Sessions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [AdminOrAbove]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _sessionRepository.DeleteAsync(id);

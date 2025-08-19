@@ -178,6 +178,70 @@ namespace Training_Management_System_ITI_Project.Controllers
         }
 
         /// <summary>
+        /// Public student registration - allows anyone to register as a trainee/student
+        /// </summary>
+        /// <returns>Student registration view</returns>
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult RegisterStudent()
+        {
+            return View(new RegisterViewModel { Role = UserRole.Trainee });
+        }
+
+        /// <summary>
+        /// Processes public student registration
+        /// </summary>
+        /// <param name="model">Student registration information</param>
+        /// <returns>Success page or registration view with errors</returns>
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RegisterStudent(RegisterViewModel model)
+        {
+            // Force role to be Trainee for public registration
+            model.Role = UserRole.Trainee;
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // Create new student user
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName,
+                Role = UserRole.Trainee, // Always trainee for public registration
+                EmailConfirmed = true // Auto-confirm for student registration
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("Student {Email} registered successfully", model.Email);
+                
+                // Add user to Trainee role
+                await _userManager.AddToRoleAsync(user, UserRole.Trainee.ToString());
+                
+                // Auto-login the new student
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                
+                TempData["SuccessMessage"] = $"Welcome {model.FullName}! Your student account has been created successfully.";
+                return RedirectToAction("Dashboard", "Home");
+            }
+
+            // Add Identity errors to ModelState
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
+        }
+
+        /// <summary>
         /// Logs out the current user
         /// </summary>
         /// <returns>Redirect to home page</returns>

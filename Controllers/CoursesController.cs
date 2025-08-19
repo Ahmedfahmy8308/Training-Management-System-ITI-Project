@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Training_Management_System_ITI_Project.Models;
 using Training_Management_System_ITI_Project.Repositories;
 using Training_Management_System_ITI_Project.ViewModels;
+using Training_Management_System_ITI_Project.Attributes;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
@@ -9,7 +11,9 @@ namespace Training_Management_System_ITI_Project.Controllers
   /// MVC Controller responsible for handling all course-related HTTP requests.
   /// Implements CRUD operations for courses with search functionality.
   /// Uses Repository Pattern for data access and ViewModels for data transfer.
+  /// Requires authentication - all actions are protected.
   /// </summary>
+  [Authorize]
   public class CoursesController : Controller
   {
     private readonly ICourseRepository _courseRepository;
@@ -85,9 +89,11 @@ namespace Training_Management_System_ITI_Project.Controllers
     /// <summary>
     /// Displays the course creation form.
     /// Populates instructor dropdown with available instructors.
+    /// Requires Instructor role or above.
     /// </summary>
     /// <returns>View with course creation form</returns>
     // GET: Courses/Create
+    [InstructorOrAbove]
     public async Task<IActionResult> Create()
     {
       // Prepare view model with list of available instructors
@@ -101,6 +107,7 @@ namespace Training_Management_System_ITI_Project.Controllers
     // POST: Courses/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [InstructorOrAbove]
     public async Task<IActionResult> Create(CourseViewModel viewModel)
     {
       if (ModelState.IsValid)

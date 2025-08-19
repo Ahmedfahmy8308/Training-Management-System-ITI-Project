@@ -1,10 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Training_Management_System_ITI_Project.Models;
 using Training_Management_System_ITI_Project.Repositories;
 using Training_Management_System_ITI_Project.ViewModels;
+using Training_Management_System_ITI_Project.Attributes;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
+    /// <summary>
+    /// Controller for managing users and user roles.
+    /// Requires authentication for all actions.
+    /// </summary>
+    [Authorize]
+    [AdminOrAbove] // User management should be restricted to Admin level and above
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;

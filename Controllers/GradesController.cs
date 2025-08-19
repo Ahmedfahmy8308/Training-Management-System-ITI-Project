@@ -1,10 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using Training_Management_System_ITI_Project.Models;
 using Training_Management_System_ITI_Project.Repositories;
 using Training_Management_System_ITI_Project.ViewModels;
+using Training_Management_System_ITI_Project.Attributes;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
+    /// <summary>
+    /// Controller for managing grades and assessments.
+    /// Requires authentication for all actions.
+    /// </summary>
+    [Authorize]
     public class GradesController : Controller
     {
         private readonly IGradeRepository _gradeRepository;
@@ -86,6 +93,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         }
 
         // GET: Grades/Create
+        [InstructorOrAbove]
         public async Task<IActionResult> Create()
         {
             var viewModel = new GradeViewModel
@@ -99,6 +107,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         // POST: Grades/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [InstructorOrAbove]
         public async Task<IActionResult> Create(GradeViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -130,6 +139,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         }
 
         // GET: Grades/Edit/5
+        [InstructorOrAbove]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -159,6 +169,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         // POST: Grades/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [InstructorOrAbove]
         public async Task<IActionResult> Edit(int id, GradeViewModel viewModel)
         {
             if (id != viewModel.Id)
@@ -202,6 +213,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         }
 
         // GET: Grades/Delete/5
+        [AdminOrAbove]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -221,6 +233,7 @@ namespace Training_Management_System_ITI_Project.Controllers
         // POST: Grades/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [AdminOrAbove]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var result = await _gradeRepository.DeleteAsync(id);
