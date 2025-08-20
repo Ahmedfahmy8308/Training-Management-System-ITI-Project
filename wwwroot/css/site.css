@@ -50,7 +50,7 @@ body {
 
 .table th {
     border-top: none;
-    background-color: #f8f9fa;
+    background-color: #15528f;
 }
 
 .btn-block {
@@ -676,5 +676,74 @@ body {
     .card {
         border: 1px solid #000 !important;
         box-shadow: none !important;
+    }
+}
+
+/* Modern Hero Section Styles */
+.hero-section .badge {
+    animation: gentle-pulse 3s ease-in-out infinite;
+    backdrop-filter: blur(10px);
+    background: rgba(255, 193, 7, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hero-section .display-2 {
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.hero-section .btn-lg {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-width: 2px;
+}
+
+.hero-section .btn-gradient-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    border: none;
+    transform: translateY(0);
+}
+
+.hero-section .btn-gradient-success:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+}
+
+.hero-section .btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transform: translateY(-2px);
+}
+
+.rounded-pill {
+    border-radius: 50rem !important;
+}
+
+@keyframes gentle-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+/* Enhanced responsive styles for modern hero */
+@media (max-width: 768px) {
+    .hero-section .display-2 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-section .lead {
+        font-size: 1.1rem;
+    }
+    
+    .hero-section .btn-lg {
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
     }
 }
