@@ -1,6 +1,6 @@
 using Training_Management_System_ITI_Project.Models;
 
-namespace Training_Management_System_ITI_Project.Repositories
+namespace Training_Management_System_ITI_Project.Repositories.Interfaces
 {
     public interface ISessionRepository : IRepository<Session>
     {

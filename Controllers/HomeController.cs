@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Training_Management_System_ITI_Project.Models;
-using Training_Management_System_ITI_Project.Repositories;
+using Training_Management_System_ITI_Project.Repositories.Interfaces;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
-  /// <summary>
-  /// Home controller that provides different experiences for authenticated and unauthenticated users
-  /// </summary>
+
   public class HomeController : Controller
   {
     private readonly ILogger<HomeController> _logger;
@@ -34,46 +32,34 @@ namespace Training_Management_System_ITI_Project.Controllers
       _userManager = userManager;
     }
 
-    /// <summary>
-    /// Main landing page - shows portfolio for unauthenticated users, dashboard for authenticated users
-    /// </summary>
+
     public IActionResult Index()
     {
-      // Check if user is authenticated
       if (User.Identity?.IsAuthenticated == true)
       {
-        // Redirect authenticated users to dashboard
         return RedirectToAction("Dashboard");
       }
 
-      // Show portfolio/landing page for unauthenticated users
       return View("Landing");
     }
 
-    /// <summary>
-    /// Dashboard for authenticated users only - shows system statistics and management options
-    /// </summary>
+
     [Authorize]
     public async Task<IActionResult> Dashboard()
     {
       var currentUser = await _userManager.GetUserAsync(User);
 
-      // Get system statistics
       ViewBag.TotalCourses = (await _courseRepository.GetAllAsync()).Count();
       ViewBag.TotalSessions = (await _sessionRepository.GetAllAsync()).Count();
       ViewBag.TotalUsers = (await _userRepository.GetAllAsync()).Count();
       ViewBag.TotalGrades = (await _gradeRepository.GetAllAsync()).Count();
 
-      // Pass user role for role-specific dashboard content
       ViewBag.UserRole = currentUser?.Role.ToString();
       ViewBag.UserName = currentUser?.FullName;
 
       return View();
     }
 
-    /// <summary>
-    /// Public action to allow student self-registration
-    /// </summary>
     [AllowAnonymous]
     public IActionResult RegisterStudent()
     {

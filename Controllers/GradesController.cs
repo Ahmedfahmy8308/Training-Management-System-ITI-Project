@@ -1,16 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Training_Management_System_ITI_Project.Models;
-using Training_Management_System_ITI_Project.Repositories;
 using Training_Management_System_ITI_Project.ViewModels;
 using Training_Management_System_ITI_Project.Attributes;
+using Training_Management_System_ITI_Project.enums;
+using Training_Management_System_ITI_Project.Repositories.Interfaces;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
-  /// <summary>
-  /// Controller for managing grades and assessments.
-  /// Requires authentication for all actions.
-  /// </summary>
+
   [Authorize]
   public class GradesController : Controller
   {
@@ -25,8 +23,7 @@ namespace Training_Management_System_ITI_Project.Controllers
       _userRepository = userRepository;
     }
 
-    // GET: Grades
-    public async Task<IActionResult> Index(int? filterByTraineeId, int? filterBySessionId)
+    public async Task<IActionResult> Index(string? filterByTraineeId, int? filterBySessionId)
     {
       var viewModel = new GradeListViewModel
       {
@@ -36,9 +33,9 @@ namespace Training_Management_System_ITI_Project.Controllers
         AvailableSessions = (await _sessionRepository.GetSessionsWithCourseAsync()).ToList()
       };
 
-      if (filterByTraineeId.HasValue)
+      if (!string.IsNullOrEmpty(filterByTraineeId))
       {
-        viewModel.Grades = (await _gradeRepository.GetGradesByTraineeAsync(filterByTraineeId.Value)).ToList();
+        viewModel.Grades = (await _gradeRepository.GetGradesByTraineeAsync(filterByTraineeId)).ToList();
       }
       else if (filterBySessionId.HasValue)
       {
@@ -52,15 +49,14 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // GET: Grades/TraineeGrades/5
-    public async Task<IActionResult> TraineeGrades(int? id)
+    public async Task<IActionResult> TraineeGrades(string? id)
     {
-      if (id == null)
+      if (string.IsNullOrEmpty(id))
       {
         return NotFound();
       }
 
-      var trainee = await _userRepository.GetByIdAsync(id.Value);
+      var trainee = await _userRepository.GetByStringIdAsync(id);
       if (trainee == null || trainee.Role != UserRole.Trainee)
       {
         return NotFound();
@@ -69,13 +65,12 @@ namespace Training_Management_System_ITI_Project.Controllers
       var viewModel = new TraineeGradesViewModel
       {
         Trainee = trainee,
-        Grades = (await _gradeRepository.GetGradesByTraineeAsync(id.Value)).ToList()
+        Grades = (await _gradeRepository.GetGradesByTraineeAsync(id)).ToList()
       };
 
       return View(viewModel);
     }
 
-    // GET: Grades/Details/5
     public async Task<IActionResult> Details(int? id)
     {
       if (id == null)
@@ -92,7 +87,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(grade);
     }
 
-    // GET: Grades/Create
     [InstructorOrAbove]
     public async Task<IActionResult> Create()
     {
@@ -104,7 +98,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // POST: Grades/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     [InstructorOrAbove]
@@ -112,7 +105,6 @@ namespace Training_Management_System_ITI_Project.Controllers
     {
       if (ModelState.IsValid)
       {
-        // Check if grade already exists for this trainee in this session
         var existingGrade = await _gradeRepository.GetGradeBySessionAndTraineeAsync(viewModel.SessionId, viewModel.TraineeId);
         if (existingGrade != null)
         {
@@ -138,7 +130,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // GET: Grades/Edit/5
     [InstructorOrAbove]
     public async Task<IActionResult> Edit(int? id)
     {
@@ -166,7 +157,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // POST: Grades/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     [InstructorOrAbove]
@@ -185,7 +175,6 @@ namespace Training_Management_System_ITI_Project.Controllers
           return NotFound();
         }
 
-        // Check if changing session/trainee would create duplicate
         if (grade.SessionId != viewModel.SessionId || grade.TraineeId != viewModel.TraineeId)
         {
           var existingGrade = await _gradeRepository.GetGradeBySessionAndTraineeAsync(viewModel.SessionId, viewModel.TraineeId);
@@ -212,7 +201,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // GET: Grades/Delete/5
     [AdminOrAbove]
     public async Task<IActionResult> Delete(int? id)
     {
@@ -230,7 +218,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(grade);
     }
 
-    // POST: Grades/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     [AdminOrAbove]

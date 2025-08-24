@@ -148,7 +148,7 @@
       </div>
     </nav>
   </header>
- 
+
   <div class="container">
     <main role="main" class="pb-3">
       @if (TempData["SuccessMessage"] != null)
@@ -354,33 +354,39 @@
       </div>
 
       <hr class="my-4 border-secondary">
-      <div class="row align-items-center">
-        <div class="col-md-6">
-          <p class="text-white-50 mb-1">
-            &copy; @DateTime.Now.Year Training Management System ITI Project. All rights reserved.
-          </p>
-          <p class="text-white-50 small mb-0">
-            Powered by ASP.NET Core 8.0 |  Secured with Identity Framework |  Bootstrap 5
-          </p>
-        </div>
-        <div class="col-md-3 text-md-end">
-          <div class="mb-2">
-            <a asp-controller="Home" asp-action="Privacy"
-              class="text-white-50 text-decoration-none footer-link me-3 small">
-              Privacy Policy
-            </a>
-            <a href="#" class="text-white-50 text-decoration-none footer-link small">
-              Terms of Service
-            </a>
+      <div class="footer-bottom">
+        <div class="row align-items-center justify-content-between">
+          <div class="col-lg-4 col-md-6 mb-2 mb-md-0">
+            <p class="text-white-50 mb-0 footer-copyright">
+              <i class="fas fa-copyright me-1"></i>
+              @DateTime.Now.Year Training Management System . All rights reserved.
+            </p>
           </div>
-          <div class="small text-white-50">
-            💻 Made with ❤️ in Egypt
+          <div class="col-lg-4 col-md-6 mb-2 mb-md-0 text-center">
+            <div class="footer-links">
+              <a asp-controller="Home" asp-action="Privacy"
+                class="text-white-50 text-decoration-none footer-link me-3 hover-primary">
+                <i class="fas fa-shield-alt me-1"></i>Privacy Policy
+              </a>
+              <a href="#" class="text-white-50 text-decoration-none footer-link hover-primary">
+                <i class="fas fa-file-contract me-1"></i>Terms of Service
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-4 text-end text-center text-lg-end">
+            <div class="made-with-love">
+              <span class="text-white-50 footer-made-with">
+                <i class="fas fa-laptop-code me-2 text-info"></i>
+                Made with <i class="fas fa-heart text-danger heartbeat mx-1"></i> in
+                <span class="text-warning fw-bold">Egypt</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </footer>
-  
+
   <script src="~/lib/jquery/dist/jquery.min.js"></script>
   <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>

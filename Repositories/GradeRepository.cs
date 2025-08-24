@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Training_Management_System_ITI_Project.Data;
 using Training_Management_System_ITI_Project.Models;
+using Training_Management_System_ITI_Project.Repositories.Interfaces;
 
 namespace Training_Management_System_ITI_Project.Repositories
 {
@@ -10,7 +11,7 @@ namespace Training_Management_System_ITI_Project.Repositories
         {
         }
 
-        public async Task<Grade?> GetGradeBySessionAndTraineeAsync(int sessionId, int traineeId)
+        public async Task<Grade?> GetGradeBySessionAndTraineeAsync(int sessionId, string traineeId)
         {
             return await _dbSet
                 .Include(g => g.Session)
@@ -29,7 +30,7 @@ namespace Training_Management_System_ITI_Project.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Grade>> GetGradesByTraineeAsync(int traineeId)
+        public async Task<IEnumerable<Grade>> GetGradesByTraineeAsync(string traineeId)
         {
             return await _dbSet
                 .Include(g => g.Session)

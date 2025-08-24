@@ -1,18 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Training_Management_System_ITI_Project.Models;
-using Training_Management_System_ITI_Project.Repositories;
 using Training_Management_System_ITI_Project.ViewModels;
 using Training_Management_System_ITI_Project.Attributes;
+using Training_Management_System_ITI_Project.enums;
+using Training_Management_System_ITI_Project.Repositories.Interfaces;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
-  /// <summary>
-  /// Controller for managing users and user roles.
-  /// Requires authentication for all actions.
-  /// </summary>
+
   [Authorize]
-  [AdminOrAbove] // User management should be restricted to Admin level and above
+  [AdminOrAbove]
   public class UsersController : Controller
   {
     private readonly IUserRepository _userRepository;
@@ -22,7 +20,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       _userRepository = userRepository;
     }
 
-    // GET: Users
     public async Task<IActionResult> Index(UserRole? filterByRole)
     {
       var viewModel = new UserListViewModel
@@ -42,7 +39,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // GET: Users/Details/5
     public async Task<IActionResult> Details(int? id)
     {
       if (id == null)
@@ -59,30 +55,27 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(user);
     }
 
-    // GET: Users/Create
     public IActionResult Create()
     {
       var viewModel = new UserViewModel();
       return View(viewModel);
     }
 
-    // POST: Users/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(UserViewModel viewModel)
     {
       if (ModelState.IsValid)
       {
-        // Check if email is unique
         if (!await _userRepository.IsEmailUniqueAsync(viewModel.Email))
         {
           ModelState.AddModelError("Email", "A user with this email already exists.");
         }
         else
         {
-          var user = new User
+          var user = new ApplicationUser
           {
-            Name = viewModel.Name,
+            FullName = viewModel.Name,
             Email = viewModel.Email,
             Role = viewModel.Role
           };
@@ -96,7 +89,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // GET: Users/Edit/5
     public async Task<IActionResult> Edit(int? id)
     {
       if (id == null)
@@ -121,7 +113,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // POST: Users/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, UserViewModel viewModel)
@@ -133,7 +124,6 @@ namespace Training_Management_System_ITI_Project.Controllers
 
       if (ModelState.IsValid)
       {
-        // Check if email is unique (excluding current user)
         if (!await _userRepository.IsEmailUniqueAsync(viewModel.Email, viewModel.Id))
         {
           ModelState.AddModelError("Email", "A user with this email already exists.");
@@ -146,7 +136,7 @@ namespace Training_Management_System_ITI_Project.Controllers
             return NotFound();
           }
 
-          user.Name = viewModel.Name;
+          user.FullName = viewModel.Name;
           user.Email = viewModel.Email;
           user.Role = viewModel.Role;
 
@@ -159,7 +149,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(viewModel);
     }
 
-    // GET: Users/Delete/5
     public async Task<IActionResult> Delete(int? id)
     {
       if (id == null)
@@ -176,7 +165,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       return View(user);
     }
 
-    // POST: Users/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)

@@ -42,7 +42,7 @@
             {
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.Course.Name)</td>
-                    <td>@(item.Course.Instructor?.Name ?? "Not Assigned")</td>
+                    <td>@(item.Course.Instructor?.FullName ?? "Not Assigned")</td>
                     <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
                     <td>@Html.DisplayFor(modelItem => item.EndDate)</td>
                     <td>

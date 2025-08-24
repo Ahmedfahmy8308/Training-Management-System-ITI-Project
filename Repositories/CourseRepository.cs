@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Training_Management_System_ITI_Project.Data;
 using Training_Management_System_ITI_Project.Models;
+using Training_Management_System_ITI_Project.Repositories.Interfaces;
 
 namespace Training_Management_System_ITI_Project.Repositories
 {

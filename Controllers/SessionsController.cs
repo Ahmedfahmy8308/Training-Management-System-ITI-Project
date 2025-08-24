@@ -1,16 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Training_Management_System_ITI_Project.Models;
-using Training_Management_System_ITI_Project.Repositories;
 using Training_Management_System_ITI_Project.ViewModels;
 using Training_Management_System_ITI_Project.Attributes;
+using Training_Management_System_ITI_Project.Repositories.Interfaces;
 
 namespace Training_Management_System_ITI_Project.Controllers
 {
-  /// <summary>
-  /// Controller for managing training sessions.
-  /// Requires authentication for all actions.
-  /// </summary>
+
   [Authorize]
   public class SessionsController : Controller
   {
@@ -23,7 +20,6 @@ namespace Training_Management_System_ITI_Project.Controllers
       _courseRepository = courseRepository;
     }
 
-    // GET: Sessions
     public async Task<IActionResult> Index(string courseNameSearch)
     {
       var viewModel = new SessionSearchViewModel

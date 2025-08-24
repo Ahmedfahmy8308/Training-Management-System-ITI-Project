@@ -1,3 +1,4 @@
+@using Training_Management_System_ITI_Project.enums
 @model Training_Management_System_ITI_Project.ViewModels.ManageUsersViewModel
 @{
   ViewData["Title"] = "Manage Users";
@@ -89,16 +90,16 @@
                 <td>
                   @switch (user.Role)
                   {
-                    case Training_Management_System_ITI_Project.Models.UserRole.SuperAdmin:
+                    case UserRole.SuperAdmin:
                       <span class="badge bg-danger"><i class="fas fa-crown me-1"></i>Super Admin</span>
                       break;
-                    case Training_Management_System_ITI_Project.Models.UserRole.Admin:
+                    case UserRole.Admin:
                       <span class="badge bg-warning text-dark"><i class="fas fa-user-shield me-1"></i>Admin</span>
                       break;
-                    case Training_Management_System_ITI_Project.Models.UserRole.Instructor:
+                    case UserRole.Instructor:
                       <span class="badge bg-info"><i class="fas fa-chalkboard-teacher me-1"></i>Instructor</span>
                       break;
-                    case Training_Management_System_ITI_Project.Models.UserRole.Trainee:
+                    case UserRole.Trainee:
                       <span class="badge bg-success"><i class="fas fa-graduation-cap me-1"></i>Trainee</span>
                       break;
                   }
@@ -118,9 +119,9 @@
                 </td>
                 <td>
                   <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" class="btn btn-outline-primary" title="View Details">
+                    <a asp-action="UserDetails" asp-controller="Account" asp-route-id="@user.Id" class="btn btn-outline-primary" title="View Details">
                       <i class="fas fa-eye"></i>
-                    </button>
+                    </a>
                     <form asp-action="ToggleUserStatus" asp-controller="Account" method="post"
                       class="d-inline user-status-form">
                       <input type="hidden" name="userId" value="@user.Id" />
